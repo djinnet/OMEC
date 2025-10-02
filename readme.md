@@ -1,4 +1,4 @@
-# 🎮 OBS Monster Encounter Counter
+# 🎮 OBS Monster Encounter Counter (OMEC)
 
 A web-based overlay and control panel for **OBS**, allowing you to display an encounter counter and a monster image (Pokémon, Digimon, Temtem, Coromon, Kindred Fates, etc.).  
 Perfect for streaming **shiny hunts** or monster-catching games.
@@ -22,8 +22,8 @@ Perfect for streaming **shiny hunts** or monster-catching games.
 ### 1. Clone the project
 
 ```bash
-git clone https://github.com/<your-repo>/obs-monster-counter.git
-cd obs-monster-counter
+git clone https://github.com/djinnet/OMEC.git
+cd OMEC
 ```
 
 ### 2. Install dependencies
@@ -160,13 +160,5 @@ To add a new franchise:
 
 -   Fetches names from **Temtem API**
 -   Uses wiki portrait images
-
----
-
-## 📝 TODO
-
--   [ ] Additional UI themes for stream overlays
--   [ ] Local caching of names for faster load
--   [ ] Custom sprite uploads
 
 ---
