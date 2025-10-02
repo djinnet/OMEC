@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Control Panel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="control">
+  <h1>Control Panel</h1>
+
+  <div class="counter">{{ counter }}</div>
+
+  <div class="sprite-container">
+    <img id="sprite-preview" src="" alt="preview">
+  </div>
+
+  <div>
+    <button class="btn-inc" id="btn-inc">+1</button>
+    <button class="btn-dec" id="btn-dec">-1</button>
+    <button class="btn-reset" id="btn-reset">Reset</button>
+  </div>
+
+    <div>
+        <label for="mode">Game/Monster Source:</label>
+        <select id="mode"></select>
+        <button class="btn-shiny" id="btn-shiny">Toggle Shiny</button>
+    </div>
+
+    <div id="generation-box" style="display:none;">
+        <label for="generation">Generation:</label>
+        <select id="generation">
+            <option value="default">Default (Newest)</option>
+            <option value="generation-i">Gen I</option>
+            <option value="generation-ii">Gen II</option>
+            <option value="generation-iii">Gen III</option>
+            <option value="generation-iv">Gen IV</option>
+            <option value="generation-v">Gen V</option>
+            <option value="generation-vi">Gen VI</option>
+            <option value="generation-vii">Gen VII</option>
+            <option value="generation-viii">Gen VIII</option>
+            <option value="generation-ix">Gen IX</option>
+        </select>
+    </div>
+
+    <div>
+        <form id="name-form" autocomplete="off">
+            <input list="name-list" id="name" value="{{ name }}" placeholder="Enter name/ID">
+            <datalist id="name-list"></datalist>
+            <button type="submit">Load</button>
+        </form>
+    </div>
+
+    <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='common.js') }}"></script>
+    
+</body>
+</html>

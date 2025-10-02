@@ -1,0 +1,45 @@
+.counter {
+  font-size: 64px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 6px black;
+  margin: 20px;
+}
+
+body.control {
+  font-family: Arial, sans-serif;
+  background: #222;
+  color: #eee;
+  text-align: center;
+}
+
+button {
+  font-size: 20px;
+  margin: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+}
+
+.sprite-container {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  overflow: hidden;   /* gem evt. det der går ud over rammen */
+}
+.sprite-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* bevar proportioner */
+}
+#generation-box {
+      margin: 10px 0;
+}
+.btn-inc { background: #4caf50; color: white; }
+.btn-dec { background: #f44336; color: white; }
+.btn-reset { background: #ff9800; color: white; }
+.btn-mode { background: #2196f3; color: white; }
+.btn-shiny { background: #9c27b0; color: white; }
