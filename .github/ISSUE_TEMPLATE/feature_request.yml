@@ -1,0 +1,31 @@
+name: Feature Request
+description: Suggest an idea for improving this project
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: input
+    id: feature-summary
+    attributes:
+      label: Feature summary
+      description: Briefly describe the feature you want to see.
+      placeholder: e.g. Add Temtem Luma support
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why do you need this feature? What problem does it solve?
+      placeholder: It would be great if...
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Feature details
+      description: How should this feature work? Include examples or mockups.
+      placeholder: When user clicks X, Y should happen...
+    validations:
+      required: false
