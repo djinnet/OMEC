@@ -1,5 +1,9 @@
 import { CreatureProvider } from "./baseProvider.js";
 
+/**
+ * Provider for Digimon creatures
+ * @author Djinnet
+ */
 export class DigimonProvider extends CreatureProvider {
     constructor() {
         super("digimon", "Digimon", true);

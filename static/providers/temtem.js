@@ -1,5 +1,9 @@
 import { CreatureProvider } from "./baseProvider.js";
 
+/**
+ * Provider for Temtem creatures
+ * @author Djinnet
+ */
 export class TemtemProvider extends CreatureProvider {
     constructor() {
         super("temtem", "Temtem", true);

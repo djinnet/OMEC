@@ -1,21 +1,23 @@
 import { CreatureProvider } from "./baseProvider.js";
+import { fetchJSON } from "./commonProvider.js";
 
+/**
+ * Provider for Kindred Fates creatures
+ * @author Djinnet
+ */
 export class KindredFatesProvider extends CreatureProvider {
     constructor() {
         super("kindredfates", "Kindred Fates", true);
         this.API_URL = "https://www.kindredfateswiki.com/api.php";
     }
 
-    async fetchJSON(params) {
-        const url = new URL(this.API_URL);
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-        url.searchParams.append("origin", "*"); // CORS fix
-        const response = await fetch(url);
-        return await response.json();
-    }
-
+    /**
+     * Get cargo images for a specific creature
+     * @param {*} name - creature name
+     * @returns {Promise<Object|null>} - cargo images or null if not found
+     */
     async getCargoImages(name) {
-        const cargoData = await this.fetchJSON({
+        const cargoData = await fetchJSON(this.API_URL, {
             action: "cargoquery",
             tables: "Kinfolk",
             fields: "imageNormal,imagePhantom,imageVariant",
@@ -27,9 +29,14 @@ export class KindredFatesProvider extends CreatureProvider {
         return cargoData.cargoquery[0].title;
     }
 
+    /**
+     * Get the file URL for a specific image
+     * @param {*} fileName - The name of the file
+     * @returns {Promise<string|null>} - The file URL or null if not found
+     */
     async getFileUrl(fileName) {
         if (!fileName) return null;
-        const data = await this.fetchJSON({
+        const data = await fetchJSON(this.API_URL, {
             action: "query",
             titles: `File:${fileName}`,
             prop: "imageinfo",
@@ -58,18 +65,18 @@ export class KindredFatesProvider extends CreatureProvider {
                 this.getFileUrl(cargoImages.imageVariant)
             ]);
 
-            // Normal vises som standard
+            // Normal sprite shows as standard
             let sprite = normalFile;
 
-            // Brug phantom som "shiny"
+            // Use phantom as "shiny"
             if (shiny && phantomFile) {
                 sprite = phantomFile;
             }
 
-            // variant kan evt. håndteres senere
+            // variant can be handled later
             return sprite;
         } catch (err) {
-            console.error("Fejl ved hentning af Kindred Fates billede:", err);
+            console.error("Error fetching Kindred Fates image:", err);
             return null;
         }
     }

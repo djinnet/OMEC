@@ -28,13 +28,14 @@ button {
   justify-content: center;
   align-items: center;
   margin: auto;
-  overflow: hidden;   /* gem evt. det der går ud over rammen */
+  overflow: hidden;  
 }
 .sprite-container img {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain; /* bevar proportioner */
+  object-fit: contain; 
 }
+
 #generation-box {
       margin: 10px 0;
 }
