@@ -1,5 +1,9 @@
 import { CreatureProvider } from "./baseProvider.js";
 
+/**
+ * Pokémon provider using the PokéAPI
+ * @author Djinnet
+ */
 export class PokemonProvider extends CreatureProvider {
     constructor() {
         super("pokemon", "Pokémon", true);
@@ -16,15 +20,21 @@ export class PokemonProvider extends CreatureProvider {
     }
 
     async getSprite(name, { shiny = false, generation = "default" } = {}) {
-        if (!name) return null;
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`);
-        if (!res.ok) return null;
-        const data = await res.json();
+        try {
+            if (!name) return null;
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`);
+            if (!res.ok) return null;
+            const data = await res.json();
 
-        const id = data.id;
-        if (shiny) {
-            return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/${id}.png`;
+            const id = data.id;
+            if (shiny) {
+                return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/${id}.png`;
+            } else {
+                return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${id}.png`;
+            }
+        } catch (error) {
+            console.error("Error fetching Pokémon sprite:", error);
+            return null;
         }
-        return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${id}.png`;
     }
 }
