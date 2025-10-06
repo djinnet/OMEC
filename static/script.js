@@ -3,6 +3,7 @@ import { DigimonProvider } from "./providers/digimon.js";
 import { TemtemProvider } from "./providers/temtem.js";
 import { CoromonProvider } from "./providers/coromon.js";
 import { KindredFatesProvider } from "./providers/kindredfates.js";
+import { PalworldProvider } from "./providers/palworld.js";
 import { loadNames, sendName, sendMode, sendGeneration, sendAction } from "./common.js";
 
 // this contains all available providers (modes)
@@ -12,7 +13,7 @@ const providers = {
     temtem: new TemtemProvider(),
     coromon: new CoromonProvider(),
     kindredfates: new KindredFatesProvider(),
-    // monstercrown: new MonsterCrownProvider()
+    palworld: new PalworldProvider()
 };
 
 /**
