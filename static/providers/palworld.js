@@ -1,4 +1,5 @@
 import { CreatureProvider } from "./baseProvider.js";
+import { fetchJSON, validateThumbnail } from "./commonProvider.js";
 
 export class PalworldProvider extends CreatureProvider {
     constructor() {
@@ -6,17 +7,9 @@ export class PalworldProvider extends CreatureProvider {
         this.API_URL = "https://palworld.wiki.gg/api.php";
     }
 
-    async fetchJSON(params) {
-        const url = new URL(this.API_URL);
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-        url.searchParams.append("origin", "*"); // CORS fix
-        const response = await fetch(url);
-        return await response.json();
-    }
-
     async validate(name) {
         if (!name) return false;
-        const json = await this.fetchJSON({
+        const json = await fetchJSON(this.API_URL, {
             action: "parse",
             format: "json",
             page: name,
@@ -28,14 +21,14 @@ export class PalworldProvider extends CreatureProvider {
 
     async getSprite(name) {
         if (!name) return null;
-        const json = await this.fetchJSON({
+        const json = await fetchJSON(this.API_URL, {
             action: "parse",
             format: "json",
             page: name,
             prop: "properties|parsewarnings",
             formatversion: 2
         });
-        if (json.parse?.properties?.thumb) {
+        if (validateThumbnail(json.parse?.properties?.thumb)) {
             return `https://palworld.wiki.gg/images/${json.parse.properties.thumb}`;
         }
         return null;
