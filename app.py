@@ -7,13 +7,13 @@ app = Flask(__name__)
 
 state = {
     "counter": 0,
-    "mode": "pokemon", # kan være "pokemon", "digimon", "temtem", osv.
+    "mode": "pokemon", # can be "pokemon", "digimon", "temtem", etc.
     "shiny": False,
     "name":"pikachu", # default pokemon
     "generation": "default"
 }
 
-subscribers = []  # aktive SSE-klienter
+subscribers = []  # active clients for SSE
 
 def notify_clients():
     data = json.dumps(state)
@@ -60,7 +60,7 @@ def control():
 def names():
     mode = state["mode"]
     try:
-        if mode == "pokemon":
+        if mode == "pokemon": # pokemon
             r = requests.get("https://pokeapi.co/api/v2/pokemon?limit=1000")
             if r.status_code == 200:
                 data = r.json()
@@ -91,8 +91,7 @@ def names():
                 members = responsejson["query"]["categorymembers"]
                 all_names.extend([m["title"] for m in members])
                 return jsonify(all_names)
-        elif mode == "kindredfates":  # kindred fates
-            # Kindred Fates: hent fra cargoquery (ligner det vi gør i provider)
+        elif mode == "kindredfates":  
             cargo_url = "https://www.kindredfateswiki.com/api.php"
             params = {
                 "action": "cargoquery",
@@ -133,10 +132,8 @@ def update():
         state["shiny"] = False
         state["name"] = ""
         state["generation"] = "default"
-        #state["image_url"] = ""
     elif action == "toggle_shiny" and state["mode"] == "pokemon":
         state["shiny"] = not state["shiny"]
-        #state["image_url"] = fetch_pokemon(state["name"], shiny=state["shiny"])
     elif action == "set_name":
         state["name"] = data.get("name", "")
         
@@ -148,7 +145,6 @@ def stream():
     def event_stream():
         q = Queue()
         subscribers.append(q)
-        # send initial state med det samme
         q.put(json.dumps(state))
         try:
             while True:
@@ -160,6 +156,5 @@ def stream():
     return Response(event_stream(), mimetype="text/event-stream")
 
 if __name__ == '__main__':
-    #state["image_url"] = fetch_pokemon(state["name"], shiny=state["shiny"])
     app.run(host="0.0.0.0", port=5000, debug=True)
         
