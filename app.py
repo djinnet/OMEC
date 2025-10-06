@@ -105,6 +105,20 @@ def names():
                 data = r.json()
                 names = [item["title"]["name"] for item in data.get("cargoquery", [])]
                 return jsonify(names)
+        elif mode == "palworld":  # palworld
+            cargo_url = "https://palworld.wiki.gg/api.php"
+            params = {
+                "action": "cargoquery",
+                "tables": "Pals",
+                "fields": "Pal",
+                "format": "json",
+                "origin": "*"
+            }
+            r = requests.get(cargo_url, params=params)
+            if r.status_code == 200:
+                data = r.json()
+                names = [item["title"]["Pal"] for item in data.get("cargoquery", [])]
+                return jsonify(names)
     except Exception as e:
         print(f"Error occurred while fetching names: {e}")
         
