@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify, Response
 import requests
 import json
 from queue import Queue
+import provider_manager
+import fetch_names_manager
 
 app = Flask(__name__)
 
@@ -23,31 +25,6 @@ def notify_clients():
         except:
             subscribers.remove(sub)
 
-
-def fetch_pokemon(name, shiny=False):
-    """Get sprite from PokéAPI"""
-    base_url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
-    poke_api = f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
-    r = requests.get(poke_api)
-    if r.status_code == 200:
-        data = r.json()
-        poke_id = data["id"]
-        if shiny:
-            return f"{base_url}shiny/{poke_id}.png"
-        else:
-            return f"{base_url}{poke_id}.png"
-    return ""
-
-def fetch_digimon(name):
-    """Get image from Digimon API"""
-    url = f"https://digimon-api.vercel.app/api/digimon/name/{name.capitalize()}"
-    r = requests.get(url)
-    if r.status_code == 200:
-        data = r.json()
-        if data and "img" in data[0]:
-            return data[0]["img"]
-    return ""
-
 @app.route("/")
 def overlay():
     return render_template("overlay.html")
@@ -60,69 +37,29 @@ def control():
 def names():
     mode = state["mode"]
     try:
-        if mode == "pokemon": # pokemon
-            r = requests.get("https://pokeapi.co/api/v2/pokemon?limit=1000")
-            if r.status_code == 200:
-                data = r.json()
-                return jsonify([p["name"] for p in data["results"]])
-        elif mode == "digimon":  # digimon
-            r = requests.get("https://digimon-api.vercel.app/api/digimon")
-            if r.status_code == 200:
-                data = r.json()
-                return jsonify([d["name"] for d in data])
-        elif mode == "temtem":  # temtem
-            r = requests.get("https://temtem-api.mael.tech/api/temtems")
-            if r.status_code == 200:
-                data = r.json()
-                return jsonify([t["name"] for t in data])
-        elif mode == "coromon":  # coromon
-            cargo_url = "https://coromon.fandom.com/api.php"
-            params = {
-                "action": "query",
-                "list": "categorymembers",
-                "cmtitle": "Category:Coromon",
-                "cmlimit": "max",
-                "format": "json"
-            }
-            r = requests.get(cargo_url, params=params)
-            all_names = []
-            if r.status_code == 200:
-                responsejson = r.json()
-                members = responsejson["query"]["categorymembers"]
-                all_names.extend([m["title"] for m in members])
-                return jsonify(all_names)
-        elif mode == "kindredfates":  
-            cargo_url = "https://www.kindredfateswiki.com/api.php"
-            params = {
-                "action": "cargoquery",
-                "tables": "Kinfolk",
-                "fields": "name",
-                "format": "json",
-                "origin": "*"
-            }
-            r = requests.get(cargo_url, params=params)
-            if r.status_code == 200:
-                data = r.json()
-                names = [item["title"]["name"] for item in data.get("cargoquery", [])]
-                return jsonify(names)
-        elif mode == "palworld":  # palworld
-            cargo_url = "https://palworld.wiki.gg/api.php"
-            params = {
-                "action": "cargoquery",
-                "tables": "Pals",
-                "fields": "Pal",
-                "format": "json",
-                "origin": "*"
-            }
-            r = requests.get(cargo_url, params=params)
-            if r.status_code == 200:
-                data = r.json()
-                names = [item["title"]["Pal"] for item in data.get("cargoquery", [])]
-                return jsonify(names)
+        names = fetch_names_manager.FetchNamesManager.fetch_names(mode)
+        return jsonify(names)
     except Exception as e:
-        print(f"Error occurred while fetching names: {e}")
-        
-    return jsonify([])
+        print(f"Error fetching names for mode {mode}: {e}")
+        return jsonify([])
+
+@app.route("/api/providers", methods=['GET'])
+def get_providers():
+    settings = provider_manager.ProviderManager.load_provider_settings()
+    return jsonify(settings)
+
+@app.route("/api/providers", methods=['POST'])
+def save_providers():
+    try:
+        data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({"status": "error", "message": "Invalid data format"}), 400
+        provider_manager.ProviderManager.save_provider_settings(data)
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        print(f"Error saving provider settings: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route('/update', methods=['POST'])
 def update():

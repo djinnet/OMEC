@@ -7,6 +7,9 @@
 </head>
 <body class="control">
   <h1>Control Panel</h1>
+  <div id="header-bar">
+    <button id="settings-btn" title="Admin Settings ⚙️">⚙️</button>
+  </div>
 
   <div class="counter">{{ counter }}</div>
 
@@ -26,7 +29,7 @@
         <button class="btn-shiny" id="btn-shiny">Toggle Shiny</button>
     </div>
 
-    <div id="generation-box" style="display:none;">
+    <!-- <div id="generation-box" style="display:none;">
         <label for="generation">Generation:</label>
         <select id="generation">
             <option value="default">Default (Newest)</option>
@@ -40,7 +43,7 @@
             <option value="generation-viii">Gen VIII</option>
             <option value="generation-ix">Gen IX</option>
         </select>
-    </div>
+    </div> -->
 
     <div>
         <form id="name-form" autocomplete="off">
@@ -49,6 +52,19 @@
             <button type="submit">Load</button>
         </form>
     </div>
+
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Admin Settings</h2>
+            <p>Enable or disable providers:</p>
+            <div id="providers-list"></div>
+            <button id="btn-sync-providers">🔄 Sync Providers</button>
+            <button id="btn-save-providers">💾 Save Changes</button>
+        </div>
+    </div>
+
+
 
     <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='common.js') }}"></script>
