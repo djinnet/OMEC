@@ -30,3 +30,7 @@ Thumbs.db
 # Ignore OBS specific cache or settings (if applicable)
 obs-studio/cache/
 obs-studio/logs/
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
