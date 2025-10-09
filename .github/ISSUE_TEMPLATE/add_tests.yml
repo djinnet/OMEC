@@ -1,0 +1,23 @@
+name: Add or Improve Tests
+description: Suggest or implement new test coverage
+title: "[TEST] "
+labels: ["testing", "backend", "frontend"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: What functionality should be tested?
+      description: Describe the provider or API that needs testing.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Expected Behavior
+      description: What should the test verify?
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: Backend (Flask)
+        - label: Frontend (JS / Providers)
+        - label: Both
