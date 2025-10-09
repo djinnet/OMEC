@@ -1,7 +1,6 @@
 import json
 import os
 
-# class ConfigManager:
 class ProviderManager:
     PROVIDER_FILE = "providers.json"
     def __init__(self):

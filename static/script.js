@@ -215,16 +215,6 @@ async function populateModeOptions() {
       }
     } 
 
-    /* Object.keys(providers)
-    .filter(modeKey => providers[modeKey].enabled)
-    .forEach(modeKey => {
-        const provider = providers[modeKey];
-        const option = document.createElement("option");
-        option.value = modeKey;
-        option.textContent = provider.label || modeKey;
-        modeSelect.appendChild(option);
-    }); */
-
     modeSelect.value = window.currentMode || "pokemon";
 
     modeSelect.addEventListener("change", setMode);
@@ -286,10 +276,7 @@ async function syncProviderSettings() {
     const updated = { ...backendProviders };
     // Add missing providers with default disabled
     missing.forEach(name => {
-      updated[name] = {
-        enabled: false,
-        label: providers[name].label || name
-      };
+      updated[name] = false;
     });
 
     // Remove extras that don’t exist in frontend
@@ -382,7 +369,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("btn-shiny").addEventListener("click", () => sendAction("toggle_shiny"));
 
     // Admin panel buttons
-    //document.getElementById("btn-load-providers").addEventListener("click", loadProviderSettings);
     document.getElementById("btn-save-providers").addEventListener("click", saveProviderSettings);
     document.getElementById("btn-sync-providers").addEventListener("click", syncProviderSettings);
 

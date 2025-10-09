@@ -5,7 +5,7 @@ class FetchManager:
         print("FetchManager initialized")
     
     @classmethod
-    def fetch_pokemon(name: str, shiny: bool = False) -> str:
+    def fetch_pokemon(cls, name: str, shiny: bool = False) -> str:
         try:
             base_api = f"https://pokeapi.co/api/v2/pokemon/{name.lower()}"
             r = requests.get(base_api)
@@ -21,7 +21,7 @@ class FetchManager:
         return ""
 
     @classmethod
-    def fetch_digimon(name: str) -> str:
+    def fetch_digimon(cls, name: str) -> str:
         try:
             base_api = f"https://digimon-api.vercel.app/api/digimon/name/{name.capitalize()}"
             r = requests.get(base_api)
