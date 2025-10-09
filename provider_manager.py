@@ -9,10 +9,17 @@ class ProviderManager:
         
     @classmethod
     def load_provider_settings(cls):
-        if not os.path.exists(cls.PROVIDER_FILE):
+        try:
+            if not os.path.exists(cls.PROVIDER_FILE):
+                return {}
+            with open(cls.PROVIDER_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print("Error loading provider settings:", e)
             return {}
-        with open(cls.PROVIDER_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+        except json.JSONDecodeError as e:
+            print("Error decoding JSON from provider settings:", e)
+            return {}
 
     @classmethod
     def save_provider_settings(cls, settings):

@@ -52,11 +52,13 @@ def get_providers():
 def save_providers():
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({"status": "error", "message": "Invalid data format"}), 400
         provider_manager.ProviderManager.save_provider_settings(data)
         return jsonify({"status": "ok"})
     except Exception as e:
         print(f"Error saving provider settings: {e}")
-        return jsonify({"status": "error", "message": str(e)}, 500)
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @app.route('/update', methods=['POST'])

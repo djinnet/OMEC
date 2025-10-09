@@ -1,9 +1,30 @@
 {
-  "coromon": true,
-  "digimon": false,
-  "kindredfates": false,
-  "monstercrown": false,
-  "palworld": false,
-  "pokemon": true,
-  "temtem": true
+  "coromon": {
+    "enabled": true,
+    "label": "Coromon"
+  },
+  "digimon": {
+    "enabled": true,
+    "label": "Digimon"
+  },
+  "kindredfates": {
+    "enabled": true,
+    "label": "Kindred Fates"
+  },
+  "monstercrown": {
+    "enabled": false,
+    "label": "Monster Crown"
+  },
+  "palworld": {
+    "enabled": false,
+    "label": "Palworld"
+  },
+  "pokemon": {
+    "enabled": true,
+    "label": "Pokemon"
+  },
+  "temtem": {
+    "enabled": false,
+    "label": "Temtem"
+  }
 }

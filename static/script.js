@@ -206,11 +206,11 @@ async function populateModeOptions() {
     }
 
     // Populate mode options
-    for (const [name, enabled] of Object.entries(serverProviders)) {
-      if (enabled) {
+    for (const [name, data] of Object.entries(serverProviders)) {
+      if (data.enabled) {
         const opt = document.createElement("option");
         opt.value = name;
-        opt.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        opt.textContent = data.label || name.charAt(0).toUpperCase() + name.slice(1);
         modeSelect.appendChild(opt);
       }
     } 
@@ -224,28 +224,31 @@ async function populateModeOptions() {
  * Load provider settings from the server and populate the admin panel
  */
 async function loadProviderSettings() {
-  const res = await fetch("/api/providers");
-  const providers = await res.json();
-  const container = document.getElementById("providers-list");
-  container.innerHTML = "";
+    const container = document.getElementById("providers-list");
+    if (!container) return;
+    container.innerHTML = "<p>Loading...</p>";
 
-  //validate serverProviders with local providers
-  const isValid = validateProviders(providers);
-  if (!isValid) {
-    alert("Provider configuration mismatch between server and client. Please check the server logs.");
-    return;
-  }
+    const res = await fetch("/api/providers");
+    const providers = await res.json();
+  
+    container.innerHTML = ""; // clear loading text
 
-  for (const [name, enabled] of Object.entries(providers)) {
-    const div = document.createElement("div");
-    div.className = "provider-item";
-    div.innerHTML = `
-      <label>
-        <input type="checkbox" id="prov-${name}" ${enabled ? "checked" : ""}>
-        ${name}
-      </label>
-    `;
-    container.appendChild(div);
+    //validate serverProviders with local providers
+    const isValid = validateProviders(providers);
+    if (!isValid) {
+        alert("Provider configuration mismatch between server and client. Please check the server logs.");
+        return;
+    }
+
+    for (const [name, data] of Object.entries(providers)) {
+        const label = data.label || name.charAt(0).toUpperCase() + name.slice(1);
+        const checked = data.enabled ? "checked" : "";
+        container.innerHTML += `
+        <label>
+            <input type="checkbox" data-provider="${name}" ${checked}>
+            ${label}
+        </label><br>
+        `;
   }
 }
 
@@ -275,8 +278,11 @@ async function syncProviderSettings() {
 
     const updated = { ...backendProviders };
     // Add missing providers with default disabled
-    missing.forEach(name => {
-      updated[name] = false;
+   missing.forEach(name => {
+      updated[name] = {
+        enabled: false,
+        label: providers[name].label || name.charAt(0).toUpperCase() + name.slice(1)
+      };
     });
 
     // Remove extras that don’t exist in frontend
@@ -308,14 +314,17 @@ async function syncProviderSettings() {
 async function saveProviderSettings() {
   try {
     const checkboxes = document.querySelectorAll("#providers-list input[type=checkbox]");
-    const newSettings = {};
+    const currentProviders = await (await fetch("/api/providers")).json();
+
     checkboxes.forEach(cb => {
-        const name = cb.id.replace("prov-", "");
-        newSettings[name] = cb.checked;
+        const name = cb.dataset.provider;
+        if (currentProviders[name]) {
+            currentProviders[name].enabled = cb.checked;
+        }
     });
 
     // ensured at least one provider is enabled
-    if (!Object.values(newSettings).some(v => v)) {
+    if (!Object.values(currentProviders).some(v => v.enabled)) {
         alert("At least one provider must be enabled.");
         return;
     }
@@ -323,7 +332,7 @@ async function saveProviderSettings() {
     const res = await fetch("/api/providers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newSettings)
+        body: JSON.stringify(currentProviders)
     });
 
     if (res.ok) {
