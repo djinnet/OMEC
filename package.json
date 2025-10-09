@@ -2,6 +2,7 @@
   "name": "obs-shiny-counter",
   "version": "1.0.0",
   "description": "A browser source for OBS that displays your monster encounters from different monster taming games.",
+  "type": "module",
   "scripts": {
     "test": "jest"
   },
@@ -9,5 +10,9 @@
     "@babel/preset-env": "^7.28.3",
     "jest": "^30.2.0",
     "whatwg-fetch": "^3.6.20"
+  },
+  "dependencies": {
+    "babel-jest": "^30.2.0",
+    "ts-jest": "^29.4.4"
   }
 }

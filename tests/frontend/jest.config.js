@@ -1,4 +1,6 @@
-export default {
+module.exports = {
   testEnvironment: "jsdom",
-  roots: ["<rootDir>/tests/frontend"],
+  transform: {
+    "^.+\\.js$": "babel-jest",
+  },
 };
