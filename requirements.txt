@@ -3,6 +3,3 @@ flask
 pytest
 pytest-flask
 requests-mock
-babel-jest
-jest
-@babel/preset-env
