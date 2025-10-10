@@ -7,13 +7,16 @@ Perfect for streaming **shiny hunts** or monster-catching games.
 
 ## ✨ Features
 
--   🔢 **Counter** with +1 / -1 / reset buttons
--   🎨 **Overlay** for OBS browser source (auto-updates via SSE)
--   🖼️ Fetches images/sprites from external **APIs**
--   🎭 **Shiny support** (Pokémon and other franchises with variants)
--   🧩 **Modular provider system** – easily add new franchises
--   📱 **Control panel** can be accessed from mobile or another device
--   📋 **Autocomplete** only shows names for the selected franchise
+- 🔢 **Counter** with +1 / -1 / reset buttons
+- 🎨 **Overlay** for OBS browser source (auto-updates via SSE)
+- 🖼️ Fetches images/sprites from external **APIs**
+- 🎭 **Shiny support** (Pokémon and other franchises with variants)
+- 🧩 **Modular provider system** – easily add new franchises
+- 📱 **Control panel** can be accessed from mobile or another device
+- 📋 **Autocomplete** only shows names for the selected franchise
+- ⚙️ **Admin modal** to enable/disable providers dynamically
+- 💾 **Persistent provider settings** via providers.json
+- 🧪 Backend (Flask) and frontend (Jest) **test** suites
 
 ---
 
@@ -40,14 +43,14 @@ python app.py
 
 ### 4. Add overlay to OBS
 
--   Add a **Browser Source** in OBS
--   URL: `http://127.0.0.1:5000/overlay`
--   Suggested size: `800x600`
+- Add a **Browser Source** in OBS
+- URL: `http://127.0.0.1:5000/overlay`
+- Suggested size: `800x600`
 
 ### 5. Open the control panel
 
--   Go to `http://127.0.0.1:5000/controls` in your browser
--   (On mobile, use your PC’s LAN IP instead of `127.0.0.1`)
+- Go to `http://127.0.0.1:5000/controls` in your browser
+- (On mobile, use your PC’s LAN IP instead of `127.0.0.1`)
 
 ---
 
@@ -57,40 +60,57 @@ python app.py
 
 ![control-panel](/static/images/controlsPage.png "Control Panel")
 
--   Dropdown to select mode (Pokémon, Digimon, etc.)
--   Input with autocomplete for monster names
--   Buttons: `+1`, `-1`, `Reset`, `Toggle Shiny`
--   Dropdown for Pokémon generation selection
+- Dropdown to select mode (Pokémon, Digimon, etc.)
+- Input with autocomplete for monster names
+- Buttons: `+1`, `-1`, `Reset`, `Toggle Shiny`
+- Dropdown for Pokémon generation selection
 
 ### Overlay (overlay.html)
 
 ![overlay](/static/images/overlayPage.png "Overlay")
 
--   Displays: Counter + Monster image
--   Updates in real-time when control panel changes state
+- Displays: Counter + Monster image
+- Updates in real-time when control panel changes state
 
 ---
 
-## 🧩 Architecture
+## 🖥️ System Architecture
 
 The system is built with **Flask (Python)** and **modular JavaScript providers**.  
 Data flows between the control panel, server, and overlay as follows:
 
 ```mermaid
-flowchart LR
-    A[Control Panel UI] -- POST /update --> B[Flask app.py]
-    B -- SSE /stream --> C[Overlay UI]
-    A -- GET /names --> B
-
-    subgraph Providers
-      P1[Pokémon API]
-      P2[Digimon API]
-      P3[Temtem API]
-      P4[Coromon Wiki]
-      P5[Kindred Fates Wiki]
+flowchart TD
+    subgraph OBS
+        O1[Overlay.html<br>Displays current monster + counter]
     end
 
-    B -- Fetch --> Providers
+    subgraph ControlPanel
+        C1[Controls.html<br>Increment, reset, mode, name input]
+        C2[Admin Modal<br>Enable/Disable providers]
+    end
+
+    subgraph Backend
+        F[Flask App (app.py)]
+        P1[(providers.json)]
+    end
+
+    subgraph Providers
+        Pkm[PokemonProvider]
+        Digi[DigimonProvider]
+        Tem[TemtemProvider]
+        Coro[CoromonProvider]
+        KF[KindredFatesProvider]
+        Pal[PalworldProvider]
+    end
+
+    C1 -->|POST /update| F
+    C2 -->|GET/POST /providers| F
+    F -->|SSE /stream| O1
+    F -->|Fetch Names| Providers
+    Providers --> F
+    F --> P1
+    F --> R
 ```
 
 ---
@@ -124,18 +144,78 @@ obs-monster-counter/
 
 ---
 
+⚙️ Admin UI
+
+The Admin Settings Modal (accessible via a gear icon ⚙️ in the top-right corner of the control panel) allows toggling providers on/off at runtime.
+Changes are persisted to providers.json automatically.
+
+Example JSON structure:
+
+```json
+{
+  "pokemon": { "enabled": true, "label": "Pokemon" },
+  "digimon": { "enabled": false, "label": "Digimon" },
+  "temtem": { "enabled": false, "label": "Temtem" },
+  "coromon": { "enabled": false, "label": "Coromon" },
+  "kindredfates": { "enabled": false, "label": "Kindred Fates" },
+  "palworld": { "enabled": false, "label": "Palworld" },
+  "monstercrown": { "enabled": false, "label": "Monster Crown" }
+}
+```
+
+---
+
+🧪 Testing
+🔹 Backend (Flask)
+
+Tested with pytest and pytest-flask.
+
+Run backend tests:
+
+```bash
+pytest
+```
+
+Covers:
+
+- /update (POST)
+- /names (GET)
+- /stream (SSE)
+
+🔹 Frontend (Jest)
+
+Tested using Jest (ESM compatible)
+
+Run frontend tests:
+
+```bash
+npm test
+```
+
+Covers:
+
+- Provider validation
+
+- Image fetching logic
+
+- Name retrieval
+
+Example file: `tests/frontend/test_providers.spec.js`
+
+---
+
 ## 🔧 Adding New Franchises
 
 To add a new franchise:
 
 1. Create a new provider inside `static/providers/`
 
-    - Must export at least:
-        - `mode` (unique string)
-        - `label` (UI display name)
-        - `enabled` (bool)
-        - `validateName(name)`
-        - `getSpriteUrl(name, shiny, generation)`
+   - Must export at least:
+     - `mode` (unique string)
+     - `label` (UI display name)
+     - `enabled` (bool)
+     - `validateName(name)`
+     - `getSpriteUrl(name, shiny, generation)`
 
 2. Import the provider in `script.js`
 3. implement the names fetching in `app.py` (similar to existing providers)
@@ -147,18 +227,18 @@ To add a new franchise:
 
 ### Pokémon Provider
 
--   Fetches names from **PokeAPI**
--   Uses high-quality sprites from **Pokémon Home**
--   Supports shiny and generation selection
+- Fetches names from **PokeAPI**
+- Uses high-quality sprites from **Pokémon Home**
+- Supports shiny and generation selection
 
 ### Digimon Provider
 
--   Fetches names from **Digimon API**
--   Normal sprites only
+- Fetches names from **Digimon API**
+- Normal sprites only
 
 ### Temtem Provider
 
--   Fetches names from **Temtem API**
--   Uses wiki portrait images
+- Fetches names from **Temtem API**
+- Uses wiki portrait images
 
 ---
