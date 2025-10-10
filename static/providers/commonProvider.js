@@ -14,6 +14,21 @@ export function validateThumbnail(thumb) {
 }
 
 /**
+ * Validate a URL
+ * @param {*} url 
+ * @returns {boolean} - true if valid, false otherwise
+ */
+export function validateURL(url) {
+    if (!url) return false;
+    try {
+        const parsedURL = new URL(url);
+        return parsedURL.protocol === "http:" || parsedURL.protocol === "https:";
+    } catch (e) {
+        return false;
+    }
+}
+
+/**
  * Fetch JSON data from a REST API endpoint
  * @param {*} API_URL - The API endpoint URL
  * @param {*} params - Query parameters for the request

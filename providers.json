@@ -1,4 +1,8 @@
 {
+  "cassettebeasts": {
+    "enabled": true,
+    "label": "Cassette Beasts"
+  },
   "coromon": {
     "enabled": true,
     "label": "Coromon"
