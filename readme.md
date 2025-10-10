@@ -214,8 +214,8 @@ To add a new franchise:
      - `mode` (unique string)
      - `label` (UI display name)
      - `enabled` (bool)
-     - `validateName(name)`
-     - `getSpriteUrl(name, shiny, generation)`
+     - `validate(name)`
+     - `getSprite(name, options = {})`
 
 2. Import the provider in `script.js`
 3. implement the names fetching in `app.py` (similar to existing providers)
