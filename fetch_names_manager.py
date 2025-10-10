@@ -1,4 +1,5 @@
 import requests
+import json
 
 class FetchNamesManager:
     
@@ -22,6 +23,8 @@ class FetchNamesManager:
                 return []
             elif mode == "palworld":
                 return cls.fetch_palworld_names()
+            elif mode == "cassettebeasts":
+                return cls.fetch_cassette_beasts_names()
             else:
                 return []
         except Exception as e:
@@ -85,6 +88,29 @@ class FetchNamesManager:
             return []
         except Exception as e:
             print(f"Error fetching Coromon names: {e}")
+            return []
+    
+    @classmethod
+    def fetch_cassette_beasts_names(cls) -> list:
+        try:
+            cargo_url = "https://wiki.cassettebeasts.com/api.php"
+            params = {
+                "action": "parse",
+                "page": "Data:Species",
+                "prop": "wikitext",
+                "format": "json"
+            }
+            r = requests.get(cargo_url, params=params)
+            all_names = []
+            if r.status_code == 200:
+                responsejson = r.json()
+                raw_json = responsejson["parse"]["wikitext"]["*"]
+                species_data = json.loads(raw_json)
+                all_names.extend([species["name"] for species in species_data])
+                return all_names
+            return []
+        except Exception as e:
+            print(f"Error fetching Cassette Beasts names: {e}")
             return []
     
     @classmethod

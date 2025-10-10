@@ -4,6 +4,7 @@ import { TemtemProvider } from "./providers/temtem.js";
 import { CoromonProvider } from "./providers/coromon.js";
 import { KindredFatesProvider } from "./providers/kindredfates.js";
 import { PalworldProvider } from "./providers/palworld.js";
+import { CassetteBeastsProvider } from "./providers/cassettebeasts.js";
 import { loadNames, sendName, sendMode, sendGeneration, sendAction } from "./common.js";
 
 // this contains all available providers (modes)
@@ -13,7 +14,8 @@ const providers = {
     temtem: new TemtemProvider(),
     coromon: new CoromonProvider(),
     kindredfates: new KindredFatesProvider(),
-    palworld: new PalworldProvider()
+    palworld: new PalworldProvider(),
+    cassettebeasts: new CassetteBeastsProvider(),
 };
 
 /**
@@ -41,7 +43,7 @@ async function nameValidate(name, mode) {
         }
         return await provider.validate(name);
     } catch (error) {
-        alert("An error occurred while validating the name.");
+        alert("An error occurred while validating the name. Error: " + error.message);
         return false;
     }
 }
