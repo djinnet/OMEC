@@ -5,17 +5,17 @@
   <title>Control Panel</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="control">
+<body class="controls-page">
   <h1>Control Panel</h1>
   <div id="header-bar">
     <button id="settings-btn" title="Admin Settings ⚙️">⚙️</button>
   </div>
 
-  <div class="counter">{{ counter }}</div>
-
   <div class="sprite-container">
     <img id="sprite-preview" src="" alt="preview">
   </div>
+
+  <div class="counter" id="counter">{{ counter }}</div>
 
   <div>
     <button class="btn-inc" id="btn-inc">+1</button>
@@ -27,6 +27,16 @@
         <label for="mode">Game/Monster Source:</label>
         <select id="mode"></select>
         <button class="btn-shiny" id="btn-shiny">Toggle Shiny</button>
+    </div>
+
+    <div class="control-group">
+      <label for="toggle-counter">Show Counter</label>
+      <input type="checkbox" id="toggle-counter" checked  />
+    </div>
+
+    <div class="control-group">
+      <label for="img-scale">Image Scale</label>
+      <input type="range" id="img-scale" min="0.5" max="3" step="0.1" value="1" />
     </div>
 
     <!-- <div id="generation-box" style="display:none;">

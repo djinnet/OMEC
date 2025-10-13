@@ -6,7 +6,7 @@
  * @param {*} action - action string (e.g., "inc", "dec", "reset")
  */
 export function sendAction(action) {
-  fetch('/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }) });
+    fetch('/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }) });
 }
 
 /**
@@ -31,6 +31,10 @@ export function sendMode(mode) {
  */
 export function sendGeneration(gen) {
     fetch('/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: "set_generation", generation: gen }) });
+}
+
+export function setImageScale(scale) {
+    fetch('/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'set_scale', scale: parseFloat(scale) }) });
 }
 
 /**

@@ -5,7 +5,7 @@ import { CoromonProvider } from "./providers/coromon.js";
 import { KindredFatesProvider } from "./providers/kindredfates.js";
 import { PalworldProvider } from "./providers/palworld.js";
 import { CassetteBeastsProvider } from "./providers/cassettebeasts.js";
-import { loadNames, sendName, sendMode, sendGeneration, sendAction } from "./common.js";
+import { loadNames, sendName, sendMode, sendGeneration, sendAction, setImageScale } from "./common.js";
 
 // this contains all available providers (modes)
 const providers = {
@@ -378,6 +378,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("btn-dec").addEventListener("click", () => sendAction("dec"));
     document.getElementById("btn-reset").addEventListener("click", () => sendAction("reset"));
     document.getElementById("btn-shiny").addEventListener("click", () => sendAction("toggle_shiny"));
+    document.getElementById("toggle-counter").addEventListener("change", () => sendAction("toggle_counter"));
+    document.getElementById("img-scale").addEventListener("input", (e) => { setImageScale(e.target.value); });
 
     // Admin panel buttons
     document.getElementById("btn-save-providers").addEventListener("click", saveProviderSettings);
@@ -400,6 +402,12 @@ evtSource.onmessage = async function(event) {
 
   const counterDiv = document.querySelector(".counter");
   if (!counterDiv) return;
+
+  // Show/hide counter based on server state
+  counterDiv.style.display = data.show_counter ? "block" : "none";
+  const toggleCounter = document.getElementById("toggle-counter");
+  if(toggleCounter) toggleCounter.checked = data.show_counter;
+
   // Counter
   counterDiv.innerText = data.counter;
 
@@ -412,6 +420,14 @@ evtSource.onmessage = async function(event) {
   // preview image (same logic as before)
   const spritePreview = document.getElementById("sprite-preview") || document.getElementById("sprite");
   if (!spritePreview) return;
+
+  // apply scale
+  //const scaleInput = document.getElementById("img-scale");
+  //if(scaleInput) scaleInput.value = data.scale || 1.0;
+
+  if(data.scale){
+    spritePreview.style.transform = `scale(${data.scale})`;
+  }
 
   console.log("Loading sprite for mode:", data.mode, "name:", data.name);
   const spriteUrl = await loadSprite(data.name, data.mode, { shiny: data.shiny, generation: data.generation });

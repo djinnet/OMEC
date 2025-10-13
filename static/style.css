@@ -6,7 +6,7 @@
   margin: 20px;
 }
 
-body.control {
+body.controls-page {
   font-family: Arial, sans-serif;
   background: #222;
   color: #eee;
@@ -21,19 +21,38 @@ button {
   border: none;
 }
 
-.sprite-container {
-  width: 200px;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-  overflow: hidden;  
+/* ========== Overlay page ========== */
+body.overlay-page .sprite-container {
+  overflow: visible; 
 }
-.sprite-container img {
+
+body.overlay-page .sprite-container img {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain; 
+  transform-origin: center center;
+  transition: transform 0.3s ease;
+}
+
+/* ========== Control page ========== */
+body.controls-page .sprite-container {
+  position: relative;
+  display: flex;
+  justify-content: center;  /* centrer horisontalt */
+  align-items: center;      /* centrer vertikalt */
+  overflow: hidden;
+  max-width: 120px;
+  max-height: 120px;
+  min-width: 64px;
+  min-height: 64px;
+  margin: 0 auto;           /* centrer containeren selv i layoutet */
+}
+
+body.controls-page .sprite-container img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;      /* sikrer at billedet bevarer proportioner */
+  transform-origin: center center;
+  transition: transform 0.2s ease;
 }
 
 #generation-box {

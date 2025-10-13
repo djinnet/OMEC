@@ -12,7 +12,9 @@ state = {
     "mode": "pokemon", # can be "pokemon", "digimon", "temtem", etc.
     "shiny": False,
     "name":"pikachu", # default pokemon
-    "generation": "default"
+    "generation": "default",
+    "show_counter": True,
+    "scale": 1.0
 }
 
 subscribers = []  # active clients for SSE
@@ -87,6 +89,10 @@ def update():
         state["shiny"] = not state["shiny"]
     elif action == "set_name":
         state["name"] = data.get("name", "")
+    elif action == "toggle_counter":
+        state["show_counter"] = not state["show_counter"]
+    elif action == "set_scale":
+        state["scale"] = data.get("scale", 1.0)
         
     notify_clients()
     return jsonify(success=True,state=state)
